@@ -2,6 +2,10 @@
 
 This repository is a complete solution for the “Agent-Powered Business Assistant” assignment. Petal & Crumb Atelier is a fictional botanical patisserie, flower boutique, and creative studio. The implementation includes every required component plus the optional reflection step.
 
+## Demonstration video
+
+[Watch the narrated Petal & Crumb functionality demo](demo/petal_and_crumb_demo.mp4)
+
 ## Submission contents
 
 - `me/about_business.pdf` - polished two-page business profile
