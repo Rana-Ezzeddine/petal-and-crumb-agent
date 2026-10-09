@@ -19,6 +19,7 @@ class CoreBotTests(unittest.TestCase):
         self.assertEqual(core_bot.classify_intent("What is in the Sweet Bloom box?"), "general_question")
         self.assertEqual(core_bot.classify_intent("I want to reserve a pottery workshop"), "lead_collection")
         self.assertEqual(core_bot.classify_intent("Feedback: please add candle making"), "feedback_unanswered")
+        self.assertEqual(core_bot.classify_intent("Can you deliver today?"), "feedback_unanswered")
 
     def test_interest_tool_logs_jsonl(self):
         result = core_bot.record_customer_interest("guest@example.com", "Demo Guest", "Four-person floral workshop")

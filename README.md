@@ -13,12 +13,13 @@ This repository is a complete solution for the “Agent-Powered Business Assista
 - `requirements.txt` - required Python libraries
 - `tests/test_core_bot.py` - offline checks for all router branches and both tools
 - `GRADING_AUDIT.md` - requirement-by-requirement quality review
+- `demo/petal_and_crumb_demo.mp4` - narrated functionality demonstration
 - `logs/` - local JSONL lead, feedback, and reflection logs created at runtime
 
 ## Run locally
 
 1. Create a virtual environment and install `requirements.txt`.
-2. Create a free-tier Gemini API key at <https://aistudio.google.com/app/apikey>, copy `.env.example` to `.env`, and insert that key.
+2. Create a free-tier Gemini API key at <https://aistudio.google.com/app/apikey>, copy `.env.example` to `.env`, and insert that key. The default model is `gemini-3.5-flash-lite`.
 3. Run `python -m unittest discover -s tests -v` for the offline checks.
 4. Run `python app.py` to launch the chatbot.
 

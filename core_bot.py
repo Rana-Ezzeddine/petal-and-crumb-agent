@@ -23,7 +23,7 @@ LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
 BUSINESS_CONTEXT = SUMMARY_PATH.read_text(encoding="utf-8")
-MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 ENABLE_REFLECTION = os.getenv("ENABLE_REFLECTION", "true").lower() == "true"
 
 # PERSONA: identity, voice, and manner.
@@ -156,7 +156,8 @@ def classify_intent(message: str) -> str:
     text = message.lower()
     feedback_terms = (
         "feedback", "complaint", "suggestion", "not helpful", "didn't help",
-        "did not help", "wrong answer", "report a problem",
+        "did not help", "wrong answer", "report a problem", "deliver", "delivery",
+        "same-day", "same day", "guarantee", "allergen-free", "allergy-safe",
     )
     lead_terms = (
         "book", "reserve", "reservation", "order", "interested", "workshop",
@@ -193,25 +194,66 @@ def _client():
     return genai.Client(api_key=api_key)
 
 
-def _run_tool_loop(contents: list[dict[str, Any]]) -> str:
+def _run_tool_loop(
+    contents: list[dict[str, Any]],
+    route: str,
+    qualified_lead: bool,
+) -> str:
     """Let the Gemini SDK perform and return local function calls automatically."""
     from google.genai import types
 
     client = _client()
-    response = client.models.generate_content(
-        model=MODEL,
-        contents=contents,
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
-            tools=[record_customer_interest, record_feedback],
-            temperature=0.2,
-            automatic_function_calling=types.AutomaticFunctionCallingConfig(
-                disable=False,
-                maximum_remote_calls=3,
+    tool_config = None
+    if route == "feedback_unanswered":
+        tool_config = types.ToolConfig(
+            function_calling_config=types.FunctionCallingConfig(
+                mode=types.FunctionCallingConfigMode.ANY,
+                allowed_function_names=["record_feedback"],
+            )
+        )
+    elif route == "lead_collection" and qualified_lead:
+        tool_config = types.ToolConfig(
+            function_calling_config=types.FunctionCallingConfig(
+                mode=types.FunctionCallingConfigMode.ANY,
+                allowed_function_names=["record_customer_interest"],
+            )
+        )
+    working_contents = list(contents)
+    for tool_round in range(3):
+        response = client.models.generate_content(
+            model=MODEL,
+            contents=working_contents,
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+                tools=[record_customer_interest, record_feedback],
+                tool_config=tool_config if tool_round == 0 else None,
+                temperature=0.2,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(
+                    disable=True,
+                ),
             ),
-        ),
-    )
-    return response.text or "I could not create a response. Please try again."
+        )
+        calls = response.function_calls or []
+        if not calls:
+            return response.text or "I could not create a response. Please try again."
+
+        working_contents.append(response.candidates[0].content)
+        result_parts = []
+        for call in calls:
+            function = TOOL_FUNCTIONS.get(call.name)
+            if function is None:
+                result: dict[str, str] = {"status": "error", "message": "Unknown tool."}
+            else:
+                try:
+                    result = function(**dict(call.args or {}))
+                except (TypeError, ValueError) as exc:
+                    result = {"status": "error", "message": str(exc)}
+            result_parts.append(
+                types.Part.from_function_response(name=call.name, response=result)
+            )
+        working_contents.append(types.Content(role="user", parts=result_parts))
+
+    return "Your request was logged, but I could not compose the final reply. Please contact the atelier team."
 
 
 def _reflect(user_message: str, route: str, draft: str) -> str:
@@ -224,7 +266,8 @@ def _reflect(user_message: str, route: str, draft: str) -> str:
     reflection_prompt = f"""Review the draft against the operational instructions.
 Correct invented facts, missed lead details, unsafe allergy claims, an inelegant
 tone, excessive floral language, or excessive length. Preserve a correct draft.
-Return only the final revised reply.
+Return only the guest-facing revised reply. Do not call, simulate, name, or print
+any tool or function; tool execution has already been completed by the application.
 
 Route: {route}
 User message: {user_message}
@@ -239,6 +282,12 @@ Draft: {draft}
         ),
     )
     revised = response.text or draft
+    revised = re.sub(
+        r"^\s*record_(?:customer_interest|feedback)\([^\n]*\)\s*",
+        "",
+        revised,
+        flags=re.I,
+    ).lstrip()
     _append_jsonl("reflection.jsonl", {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "route": route,
@@ -258,7 +307,12 @@ def chatbot(message: str, history: list[dict[str, Any]] | None = None) -> str:
         "role": "user",
         "parts": [{"text": f"Router intent: {route}\n\nUser message: {message}"}],
     })
-    draft = _run_tool_loop(contents)
+    conversation_text = " ".join(
+        [str(item.get("content", "")) for item in (history or [])] + [message]
+    )
+    has_email = bool(re.search(r"[^@\s]+@[^@\s]+\.[^@\s]+", conversation_text))
+    has_name = bool(re.search(r"\b(?:my name is|i am|i'm)\s+[A-Za-z][A-Za-z .'-]{1,60}", conversation_text, re.I))
+    draft = _run_tool_loop(contents, route, qualified_lead=has_email and has_name)
     return _reflect(message, route, draft)
 
 
