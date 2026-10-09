@@ -17,12 +17,28 @@ except ImportError:  # Router/tool demos still work before optional dependencies
 
 load_dotenv()
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
 SUMMARY_PATH = BASE_DIR / "me" / "business_summary.txt"
+PDF_PATH = BASE_DIR / "me" / "about_business.pdf"
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
 BUSINESS_CONTEXT = SUMMARY_PATH.read_text(encoding="utf-8")
+
+
+def _load_pdf_context(path: Path = PDF_PATH) -> str:
+    """Extract the required PDF profile so both assignment sources ground Gemini."""
+    from pypdf import PdfReader
+
+    reader = PdfReader(path)
+    pages = [(page.extract_text() or "").strip() for page in reader.pages]
+    extracted = "\n\n".join(page for page in pages if page)
+    if not extracted:
+        raise RuntimeError(f"No readable text was found in {path}.")
+    return extracted
+
+
+PDF_CONTEXT = _load_pdf_context()
 MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 ENABLE_REFLECTION = os.getenv("ENABLE_REFLECTION", "true").lower() == "true"
 
@@ -64,8 +80,11 @@ SYSTEM_PROMPT = f"""{PERSONA}
 Operational instructions:
 {INSTRUCTIONS}
 
-Verified business context:
+Verified short business summary:
 {BUSINESS_CONTEXT}
+
+Verified full PDF business profile:
+{PDF_CONTEXT}
 """
 
 # MCP-style tool definitions: each schema states a name, purpose, parameters,
@@ -153,20 +172,38 @@ TOOL_FUNCTIONS = {
 
 def classify_intent(message: str) -> str:
     """Lightweight, inspectable router for the three required intents."""
-    text = message.lower()
-    feedback_terms = (
-        "feedback", "complaint", "suggestion", "not helpful", "didn't help",
-        "did not help", "wrong answer", "report a problem", "deliver", "delivery",
-        "same-day", "same day", "guarantee", "allergen-free", "allergy-safe",
+    text = " ".join(message.lower().split())
+
+    # Complaints, suggestions, technical trouble, and commonly unsupported
+    # policy questions take priority over transaction words such as "booking".
+    feedback_patterns = (
+        r"\bfeedback\b", r"\bcomplain(?:t|ing)?\b", r"\bsuggest(?:ion)?\b",
+        r"\bnot helpful\b", r"\bdid(?:n't| not) help\b", r"\bwrong answer\b",
+        r"\breport (?:a |the )?problem\b", r"\b(?:error|broken|not working)\b",
+        r"\b(?:could(?:n't| not)|unable to|would not let|won't let|will not let)\b",
+        r"\bpage (?:froze|failed)\b",
+        r"\bparking\b", r"\bwi-?fi\b", r"\bwheelchair\b", r"\brestroom\b",
+        r"\bpet[- ]friendly\b", r"\bsame[- ]day\b", r"\bguarantee\b",
+        r"\ballergen[- ]free\b", r"\ballergy[- ]safe\b",
+        r"\bdeliver(?:y| today| outside| to)?\b",
     )
-    lead_terms = (
-        "book", "reserve", "reservation", "order", "interested", "workshop",
-        "private event", "celebration", "birthday", "bouquet", "gift box",
-        "pottery", "painting", "contact me", "my email", "@",
-    )
-    if any(term in text for term in feedback_terms):
+    if any(re.search(pattern, text) for pattern in feedback_patterns):
         return "feedback_unanswered"
-    if any(term in text for term in lead_terms):
+
+    # A lead requires transaction/contact intent, not merely mentioning a
+    # product such as a bouquet, workshop, pottery, or pastry.
+    lead_patterns = (
+        r"\b(?:i want|i need|i(?:'d| would) like|we want|we need|we(?:'d| would) like)\b.*\b(?:book|reserve|order|buy|schedule|arrange|host)\b",
+        r"\b(?:can|could|may) (?:i|we)\b.*\b(?:book|reserve|order|buy|schedule)\b",
+        r"\bplease (?:book|reserve|order|contact|call|email)\b",
+        r"\b(?:ready to|interested in) (?:book|booking|order|ordering|reserve|reserving|buy|buying)\b",
+        r"\b(?:i am|i'm|we are|we're) interested in\b",
+        r"\b(?:i want|i need|i(?:'d| would) like)\b.*\b(?:bouquet|gift box|workshop|private event|celebration|pastr(?:y|ies)|cake)\b",
+        r"\b(?:contact|call|email) me\b",
+        r"\bmy (?:name|email) is\b",
+        r"[^@\s]+@[^@\s]+\.[^@\s]+",
+    )
+    if any(re.search(pattern, text) for pattern in lead_patterns):
         return "lead_collection"
     return "general_question"
 
@@ -199,7 +236,7 @@ def _run_tool_loop(
     route: str,
     qualified_lead: bool,
 ) -> str:
-    """Let the Gemini SDK perform and return local function calls automatically."""
+    """Run Gemini, execute requested local tools, and return tool results."""
     from google.genai import types
 
     client = _client()
