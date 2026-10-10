@@ -29,7 +29,6 @@ This repository is a complete solution for the “Agent-Powered Business Assista
 - `.env.example` - safe API configuration template
 - `requirements.txt` - required Python libraries
 - `tests/test_core_bot.py` - offline checks for all router branches and both tools
-- `GRADING_AUDIT.md` - requirement-by-requirement quality review
 - `demo/petal_and_crumb_demo.mp4` - narrated 1280x720 demonstration captured from the running Gradio app
 - `logs/` - local JSONL lead, feedback, and reflection logs created at runtime
 
