@@ -1,3 +1,16 @@
+---
+title: Petal & Crumb Atelier
+emoji: "🌸"
+colorFrom: pink
+colorTo: yellow
+sdk: gradio
+sdk_version: 6.30.0
+python_version: 3.13
+app_file: app.py
+pinned: false
+license: mit
+---
+
 # Petal & Crumb Atelier Agent
 
 This repository is a complete solution for the “Agent-Powered Business Assistant” assignment. Petal & Crumb Atelier is a fictional botanical patisserie, flower boutique, and creative studio. The implementation includes every required component plus the optional reflection step.
@@ -55,3 +68,7 @@ The tool loop executes `record_customer_interest` only when a name and email are
 5. Show the printed router label and `logs/reflection.jsonl`.
 
 This project is fictional and intended only for coursework demonstration. It is deployment-ready but has not been deployed or submitted.
+
+## Hugging Face Spaces
+
+The repository includes the required Space metadata above. After creating a Gradio Space, upload the repository and add `GEMINI_API_KEY` under **Settings → Variables and secrets → Secrets**. Never commit the key as a file or public variable.

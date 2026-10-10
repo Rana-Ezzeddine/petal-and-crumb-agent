@@ -19,8 +19,9 @@ except ImportError:  # Router/tool demos still work before optional dependencies
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-SUMMARY_PATH = BASE_DIR / "me" / "business_summary.txt"
-PDF_PATH = BASE_DIR / "me" / "about_business.pdf"
+SOURCE_DIR = BASE_DIR / "me" if (BASE_DIR / "me").is_dir() else BASE_DIR
+SUMMARY_PATH = SOURCE_DIR / "business_summary.txt"
+PDF_PATH = SOURCE_DIR / "about_business.pdf"
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
