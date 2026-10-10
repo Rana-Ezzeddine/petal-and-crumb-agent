@@ -42,7 +42,7 @@ The router and direct tool demonstrations in the notebook run without an API key
 
 ## Agent design
 
-Flora is an elegant, lightly botanical digital hostess. Persona and operational instructions are deliberately separate. A deterministic router classifies each message as `general_question`, `lead_collection`, or `feedback_unanswered`. It distinguishes questions about an offering from actual transaction intent and gives complaints priority over lead keywords. That route is passed to the model along with recent conversation history, both required business sources, and two MCP-style tool schemas.
+Flora is an elegant, lightly botanical digital hostess. Persona and operational instructions are deliberately separate. A hybrid router classifies each message as `general_question`, `lead_collection`, or `feedback_unanswered`. Explicit lead and feedback signals are handled instantly; ambiguous messages use a lightweight Gemini classification against both business sources, with a safe offline fallback. This lets novel unsupported questions such as valet service reach the feedback path without maintaining an endless keyword list.
 
 The tool loop executes `record_customer_interest` only when a name and email are available. Explicit feedback and unanswered questions use `record_feedback`. The model receives each tool result before composing its reply. A second reflection pass checks the draft for invented facts, missed lead details, allergy risks, tone, and excessive length, then logs the original and revised replies. The complete prompt includes the text summary and text extracted from all three pages of the PDF profile.
 
