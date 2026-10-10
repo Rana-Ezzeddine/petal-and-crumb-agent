@@ -2,6 +2,16 @@
 
 import gradio as gr
 
+try:
+    import spaces
+except ImportError:  # Local runs do not need the Hugging Face ZeroGPU helper.
+    class _SpacesShim:
+        @staticmethod
+        def GPU(function):
+            return function
+
+    spaces = _SpacesShim()
+
 from core_bot import chatbot
 
 
@@ -13,6 +23,12 @@ CSS = """
 """
 
 
+@spaces.GPU
+def space_chatbot(message, history):
+    """ZeroGPU-compatible entry point; Gemini still performs the AI inference."""
+    return chatbot(message, history)
+
+
 with gr.Blocks() as demo:
     gr.Markdown(
         "# Flora | Petal & Crumb Atelier\n"
@@ -20,7 +36,7 @@ with gr.Blocks() as demo:
         "This is a fictional course project; please do not enter sensitive information."
     )
     gr.ChatInterface(
-        fn=chatbot,
+        fn=space_chatbot,
         examples=[
             "What is included in Glaze & Sip?",
             "I would like to reserve a floral workshop for four people.",

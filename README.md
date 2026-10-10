@@ -67,8 +67,8 @@ The tool loop executes `record_customer_interest` only when a name and email are
 4. Ask: “Can you deliver today to my neighborhood?”; show `logs/feedback.jsonl`.
 5. Show the printed router label and `logs/reflection.jsonl`.
 
-This project is fictional and intended only for coursework demonstration. It is deployment-ready but has not been deployed or submitted.
+This project is fictional and intended only for coursework demonstration. It is deployed publicly for coursework review, but it has not been submitted to any course portal.
 
-## Hugging Face Spaces
+## Live Hugging Face Space
 
-The repository includes the required Space metadata above. After creating a Gradio Space, upload the repository and add `GEMINI_API_KEY` under **Settings → Variables and secrets → Secrets**. Never commit the key as a file or public variable.
+The chatbot is deployed at [Petal & Crumb Atelier on Hugging Face Spaces](https://huggingface.co/spaces/RanaEzzeddine/petal-and-crumb-atelier). Its `GEMINI_API_KEY` is stored as a private Space secret and is never committed as a file or public variable.

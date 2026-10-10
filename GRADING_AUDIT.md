@@ -18,7 +18,7 @@ This audit checks the package against every explicit requirement in the assignme
 ## Bonus coverage
 
 - **Reflection step:** implemented and demonstrated. It checks the draft against factual, lead, allergy, tone, and length rules and logs the original and revised replies.
-- **Hugging Face Spaces deployment:** not claimed. The Gradio app is ready to deploy, but no external deployment was performed, in accordance with the instruction not to submit or publish anything.
+- **Hugging Face Spaces deployment:** complete. The public app is available at https://huggingface.co/spaces/RanaEzzeddine/petal-and-crumb-atelier, with the Gemini key protected as a private Space secret.
 
 ## Final risk review
 
