@@ -1,50 +1,24 @@
-"""Gradio entry point for the Petal & Crumb Atelier assistant."""
-
+"""Gradio interface; demo evidence is isolated to the current conversation turn."""
 import gradio as gr
-
-try:
-    import spaces
-except ImportError:  # Local runs do not need the Hugging Face ZeroGPU helper.
-    class _SpacesShim:
-        @staticmethod
-        def GPU(function):
-            return function
-
-    spaces = _SpacesShim()
-
-from core_bot import chatbot
-
+from core_bot import chatbot_with_trace
 
 THEME = gr.themes.Soft(primary_hue="rose", secondary_hue="orange", neutral_hue="stone")
-CSS = """
-    .gradio-container { max-width: 1000px !important; }
-    h1 { font-family: Georgia, serif !important; letter-spacing: 0.02em; }
-    footer { display: none !important; }
-"""
-
-
-@spaces.GPU
-def space_chatbot(message, history):
-    """ZeroGPU-compatible entry point; Gemini still performs the AI inference."""
-    return chatbot(message, history)
-
+CSS = ".gradio-container { max-width: 1000px !important; } h1 { font-family: Georgia, serif !important; }"
 
 with gr.Blocks() as demo:
     gr.Markdown(
         "# Flora | Petal & Crumb Atelier\n"
-        "*A botanical concierge for pastries, flowers, creative workshops, and private celebrations.*\n\n"
-        "This is a fictional course project; please do not enter sensitive information."
+        "*A botanical concierge for pastries, flowers, workshops, and private celebrations.*\n\n"
+        "Fictional coursework business. Use fictional contact details for demonstrations."
     )
-    gr.ChatInterface(
-        fn=space_chatbot,
-        examples=[
-            "What is included in Glaze & Sip?",
-            "I would like to reserve a floral workshop for four people.",
-            "Can you guarantee a nut-free pastry?",
-            "Feedback: I would love a candle-making workshop.",
-        ],
-    )
-
+    with gr.Accordion("Coursework demo: router, tools, and reflection", open=False):
+        gr.Markdown("Shows only the current turn from your conversation. A recorded lead is an enquiry, not a confirmed reservation.")
+        trace = gr.JSON(label="Current turn evidence")
+    gr.ChatInterface(fn=chatbot_with_trace, additional_outputs=[trace], api_name="chat",
+        examples=["What is included in Glaze & Sip?",
+                  "I would like to reserve a floral workshop for four people.",
+                  "Can you guarantee a nut-free pastry?",
+                  "Feedback: I would love a candle-making workshop."])
 
 if __name__ == "__main__":
     demo.launch(theme=THEME, css=CSS)
