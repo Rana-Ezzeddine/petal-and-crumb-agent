@@ -455,6 +455,20 @@ def _run_tool_loop(contents: list[Any], route: str,
         return TurnResult("I’m having trouble reaching the assistant service. Nothing was saved. Please try again shortly.", events, True)
 
 
+def _enforce_action_truth(reply: str, events: list[dict[str, Any]]) -> str:
+    """Keep action confirmations accurate even if model reflection misses one."""
+    if _success(events, "record_customer_interest"):
+        sentences = re.split(r"(?<=[.!?])\s+", reply.strip())
+        sentences = [s for s in sentences if not re.search(
+            r"\b(?:team|host|florist)\b.*\b(?:will|shall)\b", s, re.I)]
+        reply = " ".join(sentences)
+        if "not a confirmed" not in reply.lower():
+            reply += " This is an enquiry, not a confirmed reservation. A human team member must confirm availability."
+    elif not _success(events) and re.search(r"\bI (?:have |have safely |safely )?(?:saved|recorded|logged)\b", reply, re.I):
+        reply = "I have not saved your request yet. Please provide any missing name or email, or ask me to try saving it again."
+    return reply
+
+
 def _reflect(user_message: str, route: str, turn: TurnResult,
              history: list[dict[str, Any]] | None = None,
              contacts: dict[str, str] | None = None) -> str:
@@ -484,6 +498,7 @@ Draft: {turn.draft}
         except Exception as exc:
             reflection_status = "unavailable"
             print(f"[reflection] kept draft after {type(exc).__name__}")
+    revised = _enforce_action_truth(revised, turn.tool_events)
     if ENABLE_REFLECTION:
         try:
             _append_jsonl("reflection.jsonl", {"timestamp": datetime.now(timezone.utc).isoformat(),
