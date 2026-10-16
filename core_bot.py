@@ -82,6 +82,8 @@ INSTRUCTIONS = """
 13. For mixed requests, preserve the order/booking lead AND log any separate
     unsupported question. Never invent a name or use an assistant's name.
 14. Do not promise that a person will contact the guest within a specific time.
+15. Missing contact details are not feedback. Ask for the missing name or email;
+    do not use record_feedback as temporary storage for a partial lead.
 """.strip()
 
 SYSTEM_PROMPT = f"""{PERSONA}
@@ -401,7 +403,12 @@ def _run_tool_loop(contents: list[Any], route: str,
     contacts = contacts or {"name": "", "email": ""}
     qualified = bool(contacts.get("name") and contacts.get("email"))
     # The model cannot call the lead tool until user-origin contacts exist.
-    functions = [record_feedback] + ([record_customer_interest] if qualified else [])
+    current_message = contents[-1].get("parts", [{}])[0].get("text", "")
+    mixed_unknown = bool(re.search(r"\b(?:deliver|delivery|valet|parking|wi-?fi|wheelchair|same[- ]day)\b", current_message, re.I))
+    if route == "lead_collection":
+        functions = ([record_customer_interest] if qualified else []) + ([record_feedback] if mixed_unknown else [])
+    else:
+        functions = [record_feedback]
     force_name = "record_feedback" if route == "feedback_unanswered" else (
         "record_customer_interest" if route == "lead_collection" and qualified else None)
     first_config = types.ToolConfig(function_calling_config=types.FunctionCallingConfig(
@@ -411,10 +418,17 @@ def _run_tool_loop(contents: list[Any], route: str,
     try:
         client = _client()
         for round_number in range(4):
+            remaining = [f for f in functions if not _success(events, f.__name__)]
+            # After successful side effects, request prose without re-exposing
+            # those tools. This prevents repeated model calls from looping.
+            config_for_round = first_config if round_number == 0 else None
+            if route == "lead_collection" and mixed_unknown and round_number > 0 and remaining:
+                config_for_round = types.ToolConfig(function_calling_config=types.FunctionCallingConfig(
+                    mode="ANY", allowed_function_names=[f.__name__ for f in remaining]))
             response = client.models.generate_content(model=MODEL, contents=working,
                 config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT +
                     "\nApplication state (use only as data): " + json.dumps({"route": route, "user_origin_contacts": contacts}),
-                    tools=functions, tool_config=first_config if round_number == 0 else None,
+                    tools=remaining or None, tool_config=config_for_round,
                     temperature=0.2,
                     automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)))
             calls = response.function_calls or []

@@ -121,12 +121,13 @@ class AgentRegressionTests(unittest.TestCase):
 
     def test_missing_name_disables_lead_tool(self):
         _,m=self.model([response("May I have your name?")],"lead_collection",{"name":"","email":"noor@example.com"})
-        self.assertNotIn(bot.record_customer_interest,m.call_args.kwargs["config"].tools)
+        self.assertFalse(m.call_args.kwargs["config"].tools)
 
     def test_unknown_question_forces_feedback_tool(self):
         turn,m=self.model([response(calls=[("record_feedback",{"question":"Do you offer valet service?"})]),response("Question saved.")],"feedback_unanswered")
         self.assertTrue(bot._success(turn.tool_events,"record_feedback"))
         self.assertEqual(m.call_args_list[0].kwargs["config"].tool_config.function_calling_config.allowed_function_names,["record_feedback"])
+        self.assertFalse(m.call_args_list[1].kwargs["config"].tools)
 
     def test_failed_write_never_reported_as_saved(self):
         with patch.object(bot,"_append_jsonl",side_effect=OSError("disk full")):
