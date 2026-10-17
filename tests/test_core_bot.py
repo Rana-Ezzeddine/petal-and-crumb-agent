@@ -129,6 +129,40 @@ class AgentRegressionTests(unittest.TestCase):
         self.assertEqual(m.call_args_list[0].kwargs["config"].tool_config.function_calling_config.allowed_function_names,["record_feedback"])
         self.assertFalse(m.call_args_list[1].kwargs["config"].tools)
 
+    def test_mixed_complaint_and_order_executes_both_tools(self):
+        message = "Feedback: the pastries were stale. I would like to order a bouquet."
+        generate = Mock(side_effect=[
+            response(calls=[("record_customer_interest", self.args)]),
+            response(calls=[("record_feedback", {"question": "the pastries were stale"})]),
+            response("Both requests were recorded.")])
+        with patch.object(bot, "_client", return_value=SimpleNamespace(
+                models=SimpleNamespace(generate_content=generate))):
+            turn = bot._run_tool_loop(
+                [{"role": "user", "parts": [{"text": message}]}],
+                bot.classify_intent(message, False), self.contacts)
+        self.assertFalse(turn.failed)
+        self.assertTrue(bot._success(turn.tool_events, "record_customer_interest"))
+        self.assertTrue(bot._success(turn.tool_events, "record_feedback"))
+        config = generate.call_args_list[1].kwargs["config"]
+        self.assertEqual(config.tool_config.function_calling_config.allowed_function_names,
+                         ["record_feedback"])
+
+    def test_mixed_request_without_contacts_logs_feedback_before_asking(self):
+        message = "Feedback: the pastries were stale. I would like to order a bouquet."
+        generate = Mock(side_effect=[
+            response(calls=[("record_feedback", {"question": "the pastries were stale"})]),
+            response("Feedback recorded. May I have your name and email for the bouquet enquiry?")])
+        with patch.object(bot, "_client", return_value=SimpleNamespace(
+                models=SimpleNamespace(generate_content=generate))):
+            turn = bot._run_tool_loop(
+                [{"role": "user", "parts": [{"text": message}]}], "lead_collection")
+        self.assertFalse(turn.failed)
+        self.assertTrue(bot._success(turn.tool_events, "record_feedback"))
+        self.assertFalse(bot._success(turn.tool_events, "record_customer_interest"))
+        config = generate.call_args_list[0].kwargs["config"]
+        self.assertEqual(config.tool_config.function_calling_config.allowed_function_names,
+                         ["record_feedback"])
+
     def test_failed_write_never_reported_as_saved(self):
         with patch.object(bot,"_append_jsonl",side_effect=OSError("disk full")):
             turn,_=self.model([response(calls=[("record_customer_interest",self.args)]),response("Saved!")],"lead_collection",self.contacts)

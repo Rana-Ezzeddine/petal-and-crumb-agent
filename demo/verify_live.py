@@ -1,5 +1,6 @@
 """Verify the deployed Gemini assistant; use only fictional demonstration data."""
 import json
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -45,7 +46,7 @@ def verify(output=None):
     assert recorded == {'record_customer_interest', 'record_feedback'}, 'Preserve both lead and unsupported delivery question.'
     print(json.dumps({'mixed_request':mixed,'reply':mixed_reply,'trace':mixed_trace},ensure_ascii=False),flush=True)
     if output:
-        Path(output).write_text(json.dumps({"space":SPACE,"runtime_commit":"6c1df436f3abd8e14cf3f850da96dc6bbbf20cba", "captured_at":datetime.now(timezone.utc).isoformat(),"cases":results,"mixed_case":{"message":mixed,"reply":mixed_reply,"trace":mixed_trace},"passed":True},ensure_ascii=False,indent=2))
+        Path(output).write_text(json.dumps({"space":SPACE,"runtime_commit":os.getenv("DEPLOYED_RUNTIME_REVISION", "unverified; set DEPLOYED_RUNTIME_REVISION to the actual deployed revision"), "captured_at":datetime.now(timezone.utc).isoformat(),"cases":results,"mixed_case":{"message":mixed,"reply":mixed_reply,"trace":mixed_trace},"passed":True},ensure_ascii=False,indent=2))
         Path(output).with_suffix('.partial.json').unlink(missing_ok=True)
     return results
 

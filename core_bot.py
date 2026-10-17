@@ -227,7 +227,12 @@ def _valid_name(value: Any) -> bool:
                 "ready", "planning", "booking", "want", "need", "allergic", "happy",
                 "unhappy", "available", "not", "a", "an", "the", "in", "for", "to",
                 "workshop", "bouquet", "cake", "yes", "no", "thanks", "thank", "you"}
-    return not any(w.lower() in excluded for w in words)
+    # Articles/prepositions can also be genuine name components (An Nguyen,
+    # To Lam). Reject them as standalone non-names, not inside full names.
+    phrase_words = excluded - {"a", "an", "the", "in", "for", "to"}
+    if len(words) == 1:
+        return words[0].lower() not in excluded
+    return not any(w.lower() in phrase_words for w in words)
 
 
 def extract_contacts(message: str, history: list[dict[str, Any]] | None = None) -> dict[str, str]:
@@ -265,7 +270,7 @@ def extract_contacts(message: str, history: list[dict[str, Any]] | None = None) 
     return {"name": name, "email": email}
 
 
-def _heuristic_intent(message: str, history: list[dict[str, Any]] | None = None) -> str | None:
+def _has_explicit_feedback(message: str) -> bool:
     text = " ".join(message.lower().replace("’", "'").split())
     complaint = (
         r"\b(?:feedback|suggestion|complaint)\s*:",
@@ -274,8 +279,17 @@ def _heuristic_intent(message: str, history: list[dict[str, Any]] | None = None)
         r"\b(?:page|website|reservation|booking)\b.*\b(?:broken|froze|failed|not working|would not let|won't let)\b",
         r"\b(?:wrong answer|not helpful|please add|i loved|we loved)\b",
     )
-    if any(re.search(p, text) for p in complaint):
-        return "feedback_unanswered"
+    return any(re.search(p, text) for p in complaint)
+
+
+def _has_unsupported_topic(message: str) -> bool:
+    return bool(re.search(
+        r"\b(?:parking|valet|wi-?fi|wheelchair|restroom|pet[- ]friendly|"
+        r"deliver|delivery|same[- ]day|nut[- ]free guarantee)\b", message, re.I))
+
+
+def _heuristic_intent(message: str, history: list[dict[str, Any]] | None = None) -> str | None:
+    text = " ".join(message.lower().replace("’", "'").split())
     lead = (
         r"\b(?:i|we) (?:want|need|would like|'d like)\b.*\b(?:book|reserve|order|buy|schedule|arrange|host|bouquet|gift box|workshop|private event|cake)\b",
         r"\b(?:i'd|we'd) like\b.*\b(?:book|reserve|order|buy)\b",
@@ -285,15 +299,20 @@ def _heuristic_intent(message: str, history: list[dict[str, Any]] | None = None)
         r"\b(?:i am|i'm|we are|we're) interested in\b",
         r"\b(?:contact|call|email) me\b", r"\bmy (?:name|email) is\b",
     )
-    if any(re.search(p, text) for p in lead) or EMAIL_RE.search(message):
+    # Preserve explicit purchase intent even when a complaint occurs first.
+    # Contact details alone must not turn a complaint into an order.
+    explicit_lead = any(re.search(p, text) for p in lead[:-1])
+    if explicit_lead:
+        return "lead_collection"
+    if _has_explicit_feedback(message):
+        return "feedback_unanswered"
+    if re.search(lead[-1], text) or EMAIL_RE.search(message):
         return "lead_collection"
     # Known policy and factual questions should not become complaints merely
     # because they mention cancellation, allergies, or inability to attend.
     if re.search(r"\b(?:cancellation|refund|reschedul|hours|open|closed|price|how much|cost|included|ingredients|allergen|allergy)\b", text):
         return None
-    unknown = (r"\b(?:parking|valet|wi-?fi|wheelchair|restroom|pet[- ]friendly)\b",
-               r"\b(?:deliver|delivery|same[- ]day|nut[- ]free guarantee)\b")
-    if any(re.search(p, text) for p in unknown):
+    if _has_unsupported_topic(message):
         return "feedback_unanswered"
     recent = normalize_history(history)
     if recent and recent[-1]["role"] == "assistant":
@@ -404,13 +423,14 @@ def _run_tool_loop(contents: list[Any], route: str,
     qualified = bool(contacts.get("name") and contacts.get("email"))
     # The model cannot call the lead tool until user-origin contacts exist.
     current_message = contents[-1].get("parts", [{}])[0].get("text", "")
-    mixed_unknown = bool(re.search(r"\b(?:deliver|delivery|valet|parking|wi-?fi|wheelchair|same[- ]day)\b", current_message, re.I))
+    mixed_unknown = _has_unsupported_topic(current_message) or _has_explicit_feedback(current_message)
     if route == "lead_collection":
         functions = ([record_customer_interest] if qualified else []) + ([record_feedback] if mixed_unknown else [])
     else:
         functions = [record_feedback]
     force_name = "record_feedback" if route == "feedback_unanswered" else (
-        "record_customer_interest" if route == "lead_collection" and qualified else None)
+        "record_customer_interest" if route == "lead_collection" and qualified else
+        "record_feedback" if route == "lead_collection" and mixed_unknown else None)
     first_config = types.ToolConfig(function_calling_config=types.FunctionCallingConfig(
         mode="ANY", allowed_function_names=[force_name])) if force_name else None
     events: list[dict[str, Any]] = []

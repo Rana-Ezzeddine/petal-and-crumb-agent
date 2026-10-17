@@ -1,0 +1,98 @@
+{
+  "source": "Actual local reflection/tool audit records within the supplied screen recording time window.",
+  "recording": "RanaEzzeddine_C3_Demo.mp4",
+  "redactions": [
+    "Email addresses replaced with [redacted email]; names retained as visible in the authorized recording."
+  ],
+  "runtime_sha256": "53ad9d4cd1a32970e937525d0967c9c775c04def9085f6b57557d8459b1514b3",
+  "turns": [
+    {
+      "timestamp": "2026-10-17T09:48:37.657944+00:00",
+      "route": "general_question",
+      "status": "completed",
+      "draft": "Welcome to Petal & Crumb Atelier. \n\nThe Glaze & Sip experience is priced at USD 38 per person. It includes a 90-minute pottery-painting studio seat, one ceramic piece to paint, one drink of your choice, and one individual pastry. \n\nWould you like to reserve a seat for this workshop, or is there another lovely detail I can share with you today?",
+      "revised": "Welcome to Petal & Crumb Atelier. \n\nThe Glaze & Sip experience is priced at USD 38 per person. It includes a 90-minute pottery-painting studio seat, one ceramic piece to paint, one drink of your choice, and one individual pastry. \n\nWould you like to reserve a seat for this workshop, or is there another lovely detail I can share with you today?",
+      "tool_results": []
+    },
+    {
+      "timestamp": "2026-10-17T09:48:53.837478+00:00",
+      "route": "general_question",
+      "status": "completed",
+      "draft": "For six guests, the Glaze & Sip experience totals USD 228 (USD 38 per person). Each guest enjoys a 90-minute studio seat, one ceramic piece, one drink, and one pastry. \n\nIf you would like to reserve a table for your group, may I please have your name, email address, and your preferred date and time?",
+      "revised": "For six guests, the Glaze & Sip experience totals USD 228 (USD 38 per person). Each guest enjoys a 90-minute studio seat, one ceramic piece, one drink, and one pastry. \n\nIf you would like to reserve a table for your group, may I please have your name, email address, and your preferred date and time?",
+      "tool_results": []
+    },
+    {
+      "timestamp": "2026-10-17T09:49:18.008815+00:00",
+      "route": "lead_collection",
+      "status": "completed",
+      "draft": "To reserve your Glaze & Sip gathering for six on October 24 at 4:00 PM, may I please have your name and email address?",
+      "revised": "Welcome to Petal & Crumb Atelier. To reserve your Glaze & Sip gathering for six on October 24 at 4:00 PM, may I please have your name and email address?",
+      "tool_results": []
+    },
+    {
+      "timestamp": "2026-10-17T09:49:33.163910+00:00",
+      "route": "lead_collection",
+      "status": "completed",
+      "draft": "Thank you, Rana. I have successfully recorded your interest for six guests in our Glaze & Sip experience on October 24 at 4:00 PM. \n\nWorkshop availability must be confirmed by our team, and one of us will follow up with you shortly at [redacted email] to finalize the lovely details of your gathering.",
+      "revised": "Thank you, Rana. I have successfully recorded your interest for six guests in our Glaze & Sip experience on October 24 at 4:00 PM. This is an enquiry, not a confirmed reservation. A human team member must confirm availability.",
+      "tool_results": [
+        {
+          "name": "record_customer_interest",
+          "arguments": {
+            "message": "Glaze & Sip workshop for 6 guests on October 24 at 4:00 PM.",
+            "email": "[redacted email]",
+            "name": "rana ezzeddine"
+          },
+          "result": {
+            "status": "recorded",
+            "timestamp": "2026-10-17T09:49:31.070014+00:00",
+            "email": "[redacted email]",
+            "name": "rana ezzeddine",
+            "message": "Glaze & Sip workshop for 6 guests on October 24 at 4:00 PM."
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-10-17T09:50:03.249194+00:00",
+      "route": "feedback_unanswered",
+      "status": "completed",
+      "draft": "I have noted your question regarding valet service and recorded it for our human team to confirm, as details on parking arrangements are not listed in our standard atelier profile. Thank you for your thoughtful query, Rana.",
+      "revised": "I have noted your question regarding valet service and successfully recorded it for our human team to confirm, as parking arrangements are not listed in our standard atelier profile. Thank you for your thoughtful query, Rana.",
+      "tool_results": [
+        {
+          "name": "record_feedback",
+          "arguments": {
+            "question": "Do you have valet service?"
+          },
+          "result": {
+            "status": "recorded",
+            "timestamp": "2026-10-17T09:50:01.162800+00:00",
+            "question": "Do you have valet service?"
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-10-17T09:50:33.981579+00:00",
+      "route": "feedback_unanswered",
+      "status": "completed",
+      "draft": "Thank you for sharing your feedback with us, Rana. I have recorded your note regarding the pastries so our team can review it. We always wish for every detail of your visit to be delightful, and I appreciate you helping us grow.",
+      "revised": "Thank you for sharing your feedback with us, Rana. I have recorded your note regarding the pastries so our team can review it. We always wish for every detail of your visit to be delightful, and I appreciate you helping us grow.",
+      "tool_results": [
+        {
+          "name": "record_feedback",
+          "arguments": {
+            "question": "the pastries were not very fresh"
+          },
+          "result": {
+            "status": "recorded",
+            "timestamp": "2026-10-17T09:50:32.239991+00:00",
+            "question": "the pastries were not very fresh"
+          }
+        }
+      ]
+    }
+  ]
+}
