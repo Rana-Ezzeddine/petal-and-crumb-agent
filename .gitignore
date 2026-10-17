@@ -6,3 +6,6 @@ __pycache__/
 .ipynb_checkpoints/
 logs/*.jsonl
 !logs/.gitkeep
+demo/video_build/
+demo/*.partial.json
+demo/last_run_diagnostic.txt

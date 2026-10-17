@@ -1,0 +1,171 @@
+{
+  "space": "RanaEzzeddine/petal-and-crumb-atelier",
+  "runtime_commit": "6c1df436f3abd8e14cf3f850da96dc6bbbf20cba",
+  "captured_at": "2026-10-17T08:44:53.657379+00:00",
+  "cases": [
+    {
+      "message": "What is included in Glaze & Sip?",
+      "reply": "Welcome to Petal & Crumb Atelier. \n\nGlaze & Sip is a 90-minute pottery-painting experience priced at USD 38 per person. It includes one ceramic piece, one drink, and one pastry. \n\nIf you would like to reserve a seat, please let me know your name, email address, preferred date and time, and group size, and I will gladly collect those details for our team to confirm.",
+      "trace": {
+        "intent": "general_question",
+        "history_messages": 0,
+        "tool_calls": [],
+        "draft": "Welcome to Petal & Crumb Atelier. \n\nGlaze & Sip is a 90-minute pottery-painting experience priced at USD 38 per person. It includes one ceramic piece to paint, one drink of your choice, and one individual pastry. \n\nIf you would like to reserve a seat, please let me know your name, email address, preferred date and time, and group size, and I will gladly collect those details for our team to confirm.",
+        "revised": "Welcome to Petal & Crumb Atelier. \n\nGlaze & Sip is a 90-minute pottery-painting experience priced at USD 38 per person. It includes one ceramic piece, one drink, and one pastry. \n\nIf you would like to reserve a seat, please let me know your name, email address, preferred date and time, and group size, and I will gladly collect those details for our team to confirm.",
+        "failed": false
+      }
+    },
+    {
+      "message": "How much would that experience cost for four people?",
+      "reply": "For four guests, the Glaze & Sip experience totals USD 152 (USD 38 per person), which includes four ceramic pieces, four drinks, and four pastries. \n\nWould you like me to note down your details so our team can check availability for your preferred date and time? If so, please share your name and email address along with your preferred schedule.",
+      "trace": {
+        "intent": "general_question",
+        "history_messages": 2,
+        "tool_calls": [],
+        "draft": "For four guests, the Glaze & Sip experience totals USD 152 (USD 38 per person), which includes four ceramic pieces, four drinks, and four pastries. \n\nWould you like me to note down your details so our team can check availability for your preferred date and time? If so, please share your name and email address along with your preferred schedule.",
+        "revised": "For four guests, the Glaze & Sip experience totals USD 152 (USD 38 per person), which includes four ceramic pieces, four drinks, and four pastries. \n\nWould you like me to note down your details so our team can check availability for your preferred date and time? If so, please share your name and email address along with your preferred schedule.",
+        "failed": false
+      }
+    },
+    {
+      "message": "I would like to reserve that experience for four people next Saturday at 3 pm.",
+      "reply": "That sounds like a wonderfully creative way to spend an afternoon. To complete your reservation request for next Saturday at 3:00 PM for four guests, I just need your name and email address. \n\nOnce you share those details, I will gladly record your interest for our team to confirm.",
+      "trace": {
+        "intent": "lead_collection",
+        "history_messages": 4,
+        "tool_calls": [],
+        "draft": "That sounds like a wonderfully creative way to spend an afternoon. To complete your reservation request for next Saturday at 3:00 PM for four guests, I just need your name and email address. \n\nOnce you share those details, I will gladly record your interest for our team to confirm.",
+        "revised": "That sounds like a wonderfully creative way to spend an afternoon. To complete your reservation request for next Saturday at 3:00 PM for four guests, I just need your name and email address. \n\nOnce you share those details, I will gladly record your interest for our team to confirm.",
+        "failed": false
+      }
+    },
+    {
+      "message": "I am interested. My email is noor.demo@example.com.",
+      "reply": "Thank you. I have your email address, **noor.demo@example.com**, and I am delighted to help you arrange this. \n\nTo make sure I have everything correct for your Glaze & Sip session for four guests next Saturday at 3:00 PM, I just need one final detail: **your full name**. \n\nOnce you share that with me, I will be delighted to record your request for our team to confirm.",
+      "trace": {
+        "intent": "lead_collection",
+        "history_messages": 6,
+        "tool_calls": [],
+        "draft": "Thank you, Noor. I am delighted to help you arrange this. \n\nTo make sure I have everything correct for your Glaze & Sip reservation for four guests next Saturday at 3:00 PM, I just need one final detail: **your full name**. \n\nOnce you share that with me, I will be delighted to save your request for our team to confirm.",
+        "revised": "Thank you. I have your email address, **noor.demo@example.com**, and I am delighted to help you arrange this. \n\nTo make sure I have everything correct for your Glaze & Sip session for four guests next Saturday at 3:00 PM, I just need one final detail: **your full name**. \n\nOnce you share that with me, I will be delighted to record your request for our team to confirm.",
+        "failed": false
+      }
+    },
+    {
+      "message": "Noor Haddad, noor.demo@example.com",
+      "reply": "Thank you, Noor. I have successfully saved your interest for the Glaze & Sip experience for four guests next Saturday at 3:00 PM. May I assist you with selecting your drinks or pastries before your visit? This is an enquiry, not a confirmed reservation. A human team member must confirm availability.",
+      "trace": {
+        "intent": "lead_collection",
+        "history_messages": 8,
+        "tool_calls": [
+          {
+            "name": "record_customer_interest",
+            "arguments": {
+              "message": "Glaze & Sip for 4 guests next Saturday at 3 PM",
+              "name": "Noor Haddad",
+              "email": "noor.demo@example.com"
+            },
+            "result": {
+              "status": "recorded",
+              "timestamp": "2026-10-17T08:44:04.771976+00:00",
+              "email": "noor.demo@example.com",
+              "name": "Noor Haddad",
+              "message": "Glaze & Sip for 4 guests next Saturday at 3 PM"
+            }
+          }
+        ],
+        "draft": "Thank you, Noor. I have successfully saved your interest for the Glaze & Sip experience for four guests next Saturday at 3:00 PM. \n\nA human member of our team will review the schedule and confirm your reservation shortly. May I assist you with selecting your drinks or pastries before your visit?",
+        "revised": "Thank you, Noor. I have successfully saved your interest for the Glaze & Sip experience for four guests next Saturday at 3:00 PM. May I assist you with selecting your drinks or pastries before your visit? This is an enquiry, not a confirmed reservation. A human team member must confirm availability.",
+        "failed": false
+      }
+    },
+    {
+      "message": "Do you offer valet service?",
+      "reply": "I have noted your question regarding valet service for a human host to confirm, as that specific detail is not listed in our current information. \n\nWhile I cannot offer a definitive answer just yet, our team will be delighted to assist you further. Please let me know if there is anything else you would like to explore for your upcoming visit to the atelier.",
+      "trace": {
+        "intent": "feedback_unanswered",
+        "history_messages": 10,
+        "tool_calls": [
+          {
+            "name": "record_feedback",
+            "arguments": {
+              "question": "Do you offer valet service?"
+            },
+            "result": {
+              "status": "recorded",
+              "timestamp": "2026-10-17T08:44:19.507350+00:00",
+              "question": "Do you offer valet service?"
+            }
+          }
+        ],
+        "draft": "I have noted your question regarding valet service for a human host to confirm, as that detail is not listed in our current information. \n\nWhile we cannot offer a definitive answer just yet, our team will be delighted to assist you further. Please let me know if there is anything else you would like to explore for your upcoming visit to the atelier.",
+        "revised": "I have noted your question regarding valet service for a human host to confirm, as that specific detail is not listed in our current information. \n\nWhile I cannot offer a definitive answer just yet, our team will be delighted to assist you further. Please let me know if there is anything else you would like to explore for your upcoming visit to the atelier.",
+        "failed": false
+      }
+    },
+    {
+      "message": "Feedback: the pastries were stale.",
+      "reply": "Thank you for sharing your thoughts with us. I have recorded your feedback so our team can review it. We truly appreciate you letting us know, as every detail helps us tend to our atelier with greater care.",
+      "trace": {
+        "intent": "feedback_unanswered",
+        "history_messages": 12,
+        "tool_calls": [
+          {
+            "name": "record_feedback",
+            "arguments": {
+              "question": "the pastries were stale."
+            },
+            "result": {
+              "status": "recorded",
+              "timestamp": "2026-10-17T08:44:34.218338+00:00",
+              "question": "the pastries were stale."
+            }
+          }
+        ],
+        "draft": "Thank you for sharing your thoughts with us. I have recorded your feedback so our team can review it. We truly appreciate you letting us know, as every detail helps us tend to our atelier with greater care.",
+        "revised": "Thank you for sharing your thoughts with us. I have recorded your feedback so our team can review it. We truly appreciate you letting us know, as every detail helps us tend to our atelier with greater care.",
+        "failed": false
+      }
+    }
+  ],
+  "mixed_case": {
+    "message": "I want to order a birthday bouquet for delivery. My name is Maya Rahal and my email is maya.demo@example.com.",
+    "reply": "Welcome, Maya. I have successfully saved your interest for a birthday bouquet. Because delivery coverage and exact routing must always be confirmed by our human team, I have logged your question for a member of our atelier to verify. To help us tailor your birthday arrangement, could you share your preferred date, any color palette you have in mind, and the delivery address? This is an enquiry, not a confirmed reservation. A human team member must confirm availability.",
+    "trace": {
+      "intent": "lead_collection",
+      "history_messages": 0,
+      "tool_calls": [
+        {
+          "name": "record_customer_interest",
+          "arguments": {
+            "name": "Maya Rahal",
+            "message": "Ordering a birthday bouquet for delivery.",
+            "email": "maya.demo@example.com"
+          },
+          "result": {
+            "status": "recorded",
+            "timestamp": "2026-10-17T08:44:51.129733+00:00",
+            "email": "maya.demo@example.com",
+            "name": "Maya Rahal",
+            "message": "Ordering a birthday bouquet for delivery."
+          }
+        },
+        {
+          "name": "record_feedback",
+          "arguments": {
+            "question": "Does Petal & Crumb offer delivery to specific locations, and what are the exact fees and time slots?"
+          },
+          "result": {
+            "status": "recorded",
+            "timestamp": "2026-10-17T08:44:51.799725+00:00",
+            "question": "Does Petal & Crumb offer delivery to specific locations, and what are the exact fees and time slots?"
+          }
+        }
+      ],
+      "draft": "Welcome, Maya. I have successfully saved your interest for a birthday bouquet. \n\nBecause delivery coverage and exact routing must always be confirmed by our human team, I have logged your question for a member of our atelier to verify. \n\nTo help us tailor your birthday arrangement, could you share your preferred date, any color palette you have in mind, and the delivery address?",
+      "revised": "Welcome, Maya. I have successfully saved your interest for a birthday bouquet. Because delivery coverage and exact routing must always be confirmed by our human team, I have logged your question for a member of our atelier to verify. To help us tailor your birthday arrangement, could you share your preferred date, any color palette you have in mind, and the delivery address? This is an enquiry, not a confirmed reservation. A human team member must confirm availability.",
+      "failed": false
+    }
+  },
+  "passed": true
+}

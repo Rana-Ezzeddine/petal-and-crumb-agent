@@ -177,5 +177,14 @@ class AgentRegressionTests(unittest.TestCase):
     def test_empty_message(self):
         self.assertIn("Please send",bot.chatbot("  "))
 
+    def test_lead_reply_does_not_promise_human_callback_or_confirm_booking(self):
+        events=[{"name":"record_customer_interest","result":{"status":"recorded"}}]
+        reply=bot._enforce_action_truth("I recorded your interest. A human team member will confirm shortly.",events)
+        self.assertNotIn("shortly",reply)
+        self.assertIn("not a confirmed reservation",reply)
+
+    def test_unattempted_write_cannot_be_claimed_as_saved(self):
+        self.assertIn("not saved",bot._enforce_action_truth("I have saved your enquiry.",[]))
+
 
 if __name__=="__main__":unittest.main()
