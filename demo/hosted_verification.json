@@ -1,0 +1,171 @@
+{
+  "space": "RanaEzzeddine/petal-and-crumb-atelier",
+  "runtime_commit": "b6dd0ad18a9060e771f87716a7a258907a963a0d",
+  "captured_at": "2026-10-17T10:23:15.712632+00:00",
+  "cases": [
+    {
+      "message": "What is included in Glaze & Sip?",
+      "reply": "Welcome to Petal & Crumb Atelier. \n\nOur Glaze & Sip experience is a 90-minute pottery-painting seat for USD 38 per person. It includes one ceramic piece to paint, one drink of your choice, and one pastry from our seasonal counter. \n\nWorkshops are usually held Friday through Sunday and require advance reservation to confirm availability. Would you like to reserve a table for this gentle creative pause?",
+      "trace": {
+        "intent": "general_question",
+        "history_messages": 0,
+        "tool_calls": [],
+        "draft": "Welcome to Petal & Crumb Atelier. \n\nOur Glaze & Sip experience is a 90-minute pottery-painting seat for USD 38 per person. It includes one ceramic piece to paint, one drink of your choice, and one pastry from our seasonal counter. \n\nReservations are usually held Friday through Sunday and require advance booking to confirm availability. Would you like to reserve a table for this gentle creative pause?",
+        "revised": "Welcome to Petal & Crumb Atelier. \n\nOur Glaze & Sip experience is a 90-minute pottery-painting seat for USD 38 per person. It includes one ceramic piece to paint, one drink of your choice, and one pastry from our seasonal counter. \n\nWorkshops are usually held Friday through Sunday and require advance reservation to confirm availability. Would you like to reserve a table for this gentle creative pause?",
+        "failed": false
+      }
+    },
+    {
+      "message": "How much would that experience cost for four people?",
+      "reply": "For four guests, the Glaze & Sip experience totals USD 152 (USD 38 per person), which includes four ceramic pieces, four drinks, and four pastries across your 90-minute studio session. \n\nIf you would like to request a reservation for your group, please share your name, email address, and your preferred date and time, and I will gladly gather those details for our team to confirm.",
+      "trace": {
+        "intent": "general_question",
+        "history_messages": 2,
+        "tool_calls": [],
+        "draft": "For four guests, the Glaze & Sip experience totals USD 152 (USD 38 per person), which includes four ceramic pieces, four drinks, and four pastries across your 90-minute studio session. \n\nIf you would like to request a reservation for your group, please share your name, email address, and your preferred date and time, and I will gladly gather those details for our team to confirm.",
+        "revised": "For four guests, the Glaze & Sip experience totals USD 152 (USD 38 per person), which includes four ceramic pieces, four drinks, and four pastries across your 90-minute studio session. \n\nIf you would like to request a reservation for your group, please share your name, email address, and your preferred date and time, and I will gladly gather those details for our team to confirm.",
+        "failed": false
+      }
+    },
+    {
+      "message": "I would like to reserve that experience for four people next Saturday at 3 pm.",
+      "reply": "How wonderful to cultivate a shared creative afternoon together. To help me record your request for Glaze & Sip for four guests next Saturday at 3:00 PM, could you please share your name and email address?",
+      "trace": {
+        "intent": "lead_collection",
+        "history_messages": 4,
+        "tool_calls": [],
+        "draft": "How wonderful to cultivate a shared creative afternoon together. To help me record your request for Glaze & Sip for four guests next Saturday at 3:00 PM, could you please share your name and email address?",
+        "revised": "How wonderful to cultivate a shared creative afternoon together. To help me record your request for Glaze & Sip for four guests next Saturday at 3:00 PM, could you please share your name and email address?",
+        "failed": false
+      }
+    },
+    {
+      "message": "I am interested. My email is noor.demo@example.com.",
+      "reply": "Welcome to Petal & Crumb Atelier. To gently complete your reservation request for Glaze & Sip, could you please share your name?",
+      "trace": {
+        "intent": "lead_collection",
+        "history_messages": 6,
+        "tool_calls": [],
+        "draft": "To complete your reservation request for Glaze & Sip for four guests next Saturday at 3:00 PM, could you please share your name?",
+        "revised": "Welcome to Petal & Crumb Atelier. To gently complete your reservation request for Glaze & Sip, could you please share your name?",
+        "failed": false
+      }
+    },
+    {
+      "message": "Noor Haddad, noor.demo@example.com",
+      "reply": "Thank you so much, Noor. I have safely recorded your interest in the Glaze & Sip experience for four guests next Saturday at 3:00 PM. We look forward to welcoming you into our studio for a truly lovely afternoon of making. This is an enquiry, not a confirmed reservation. A human team member must confirm availability.",
+      "trace": {
+        "intent": "lead_collection",
+        "history_messages": 8,
+        "tool_calls": [
+          {
+            "name": "record_customer_interest",
+            "arguments": {
+              "message": "Reservation request for Glaze & Sip, 4 guests, next Saturday at 3:00 PM",
+              "email": "noor.demo@example.com",
+              "name": "Noor Haddad"
+            },
+            "result": {
+              "status": "recorded",
+              "timestamp": "2026-10-17T10:22:28.067002+00:00",
+              "email": "noor.demo@example.com",
+              "name": "Noor Haddad",
+              "message": "Reservation request for Glaze & Sip, 4 guests, next Saturday at 3:00 PM"
+            }
+          }
+        ],
+        "draft": "Thank you so much, Noor. I have safely recorded your interest in the Glaze & Sip experience for four guests next Saturday at 3:00 PM. \n\nA human team member will review your request and confirm availability for your visit. We look forward to welcoming you into our studio for a truly lovely afternoon of making.",
+        "revised": "Thank you so much, Noor. I have safely recorded your interest in the Glaze & Sip experience for four guests next Saturday at 3:00 PM. We look forward to welcoming you into our studio for a truly lovely afternoon of making. This is an enquiry, not a confirmed reservation. A human team member must confirm availability.",
+        "failed": false
+      }
+    },
+    {
+      "message": "Do you offer valet service?",
+      "reply": "I have safely noted your question regarding valet service for our human team to confirm for you. Because that particular detail is not listed in our current atelier profile, a member of our team will be delighted to clarify it when confirming your visit. \n\nPlease let me know if there is anything else you would like to explore as we look toward your lovely afternoon of making.",
+      "trace": {
+        "intent": "feedback_unanswered",
+        "history_messages": 10,
+        "tool_calls": [
+          {
+            "name": "record_feedback",
+            "arguments": {
+              "question": "Do you offer valet service?"
+            },
+            "result": {
+              "status": "recorded",
+              "timestamp": "2026-10-17T10:22:42.294682+00:00",
+              "question": "Do you offer valet service?"
+            }
+          }
+        ],
+        "draft": "I have noted your question regarding valet service for our human team to confirm for you. Because that detail is not listed in our current atelier profile, a member of our team will be delighted to clarify it for you. \n\nPlease let me know if there is anything else you would like to explore for your visit.",
+        "revised": "I have safely noted your question regarding valet service for our human team to confirm for you. Because that particular detail is not listed in our current atelier profile, a member of our team will be delighted to clarify it when confirming your visit. \n\nPlease let me know if there is anything else you would like to explore as we look toward your lovely afternoon of making.",
+        "failed": false
+      }
+    },
+    {
+      "message": "Feedback: the pastries were stale.",
+      "reply": "Thank you so much for sharing your thoughts with us, Noor. I have safely recorded your feedback for our team. We truly value every moment of your experience and will use your words to tend to our counter with even greater care.",
+      "trace": {
+        "intent": "feedback_unanswered",
+        "history_messages": 12,
+        "tool_calls": [
+          {
+            "name": "record_feedback",
+            "arguments": {
+              "question": "the pastries were stale."
+            },
+            "result": {
+              "status": "recorded",
+              "timestamp": "2026-10-17T10:22:57.281688+00:00",
+              "question": "the pastries were stale."
+            }
+          }
+        ],
+        "draft": "Thank you so much for sharing your thoughts with us, Noor. I have safely recorded your feedback for our team. We truly value every moment of your experience and will use your words to tend to our counter with even greater care.",
+        "revised": "Thank you so much for sharing your thoughts with us, Noor. I have safely recorded your feedback for our team. We truly value every moment of your experience and will use your words to tend to our counter with even greater care.",
+        "failed": false
+      }
+    }
+  ],
+  "mixed_case": {
+    "message": "I want to order a birthday bouquet for delivery. My name is Maya Rahal and my email is maya.demo@example.com.",
+    "reply": "Welcome, Maya. I have successfully saved your interest for a birthday bouquet. Because delivery coverage requires verification by our human team, I have noted your question for them to confirm. To help us tailor the perfect arrangement, could you share your preferred delivery date, whether you would prefer our petite bouquet (USD 28) or signature bouquet (USD 48), and any specific color palette or card message you have in mind? This is an enquiry, not a confirmed reservation. A human team member must confirm availability.",
+    "trace": {
+      "intent": "lead_collection",
+      "history_messages": 0,
+      "tool_calls": [
+        {
+          "name": "record_customer_interest",
+          "arguments": {
+            "email": "maya.demo@example.com",
+            "message": "Ordering a birthday bouquet for delivery.",
+            "name": "Maya Rahal"
+          },
+          "result": {
+            "status": "recorded",
+            "timestamp": "2026-10-17T10:23:13.353692+00:00",
+            "email": "maya.demo@example.com",
+            "name": "Maya Rahal",
+            "message": "Ordering a birthday bouquet for delivery."
+          }
+        },
+        {
+          "name": "record_feedback",
+          "arguments": {
+            "question": "What are the delivery areas for Petal & Crumb Atelier?"
+          },
+          "result": {
+            "status": "recorded",
+            "timestamp": "2026-10-17T10:23:14.070497+00:00",
+            "question": "What are the delivery areas for Petal & Crumb Atelier?"
+          }
+        }
+      ],
+      "draft": "Welcome, Maya. I have successfully saved your interest for a birthday bouquet. \n\nBecause delivery coverage requires verification by our human team, I have noted your question for them to confirm. \n\nTo help us tailor the perfect arrangement, could you share your preferred delivery date, whether you would prefer our petite bouquet (USD 28) or signature bouquet (USD 48), and any specific color palette or card message you have in mind?",
+      "revised": "Welcome, Maya. I have successfully saved your interest for a birthday bouquet. Because delivery coverage requires verification by our human team, I have noted your question for them to confirm. To help us tailor the perfect arrangement, could you share your preferred delivery date, whether you would prefer our petite bouquet (USD 28) or signature bouquet (USD 48), and any specific color palette or card message you have in mind? This is an enquiry, not a confirmed reservation. A human team member must confirm availability.",
+      "failed": false
+    }
+  },
+  "passed": true
+}

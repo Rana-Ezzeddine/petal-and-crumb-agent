@@ -24,8 +24,9 @@ Flora represents a fictional botanical patisserie, flower boutique, and workshop
 - **[Watch the continuous screen recording](demo/RanaEzzeddine_C3_Demo.mp4)** — approximately 2 minutes 20 seconds, recorded on October 17, 2026. Download the MP4 if GitHub does not display a player.
 - **[Recording-session tool and reflection evidence](demo/recording_evidence.json)** — six actual audit entries from the recording's time window, including tool arguments/results and original/revised answers. Email addresses are redacted in this JSON.
 - **[Main notebook](business_agent.ipynb)** — full implementation, labeled persona/instructions, router, schemas, demonstrations, test results, and recording evidence.
+- **[Hosted live verification](demo/hosted_verification.json)** — seven live conversation turns plus an independent mixed request; all assertions passed after deployment.
 - **[Validation record](VALIDATION.md)** — verification details and evidence provenance.
-- **[Existing Hugging Face Space](https://huggingface.co/spaces/RanaEzzeddine/petal-and-crumb-atelier)** — hosted coursework demonstration. The revised local runtime shown in the new recording is the version in this repository; the existing Space still uses the earlier pinned runtime until redeployed.
+- **[Live Hugging Face Space](https://huggingface.co/spaces/RanaEzzeddine/petal-and-crumb-atelier)** — hosted coursework demonstration, updated on October 17, 2026 to the revised runtime shown in the recording.
 
 The new recording shows workshop information, a remembered six-person calculation (**USD 228 = 6 × USD 38**), enquiry collection, an unanswered valet-service question, and pastry feedback. The structured audit file supplies the tool execution details. The older narrated walkthrough is retained as supplementary historical evidence, not as the primary recording.
 
@@ -83,4 +84,4 @@ The project uses Google's `google-genai` SDK in place of the legacy `google.gene
 
 For the revised runtime, use a **CPU Gradio Space** with `app.py` as the entrypoint. Upload `app.py`, `core_bot.py`, `requirements.txt`, the `me/` directory, and this README's configuration. Store `GEMINI_API_KEY` as a private Space secret. The optional `deployment/huggingface_app.py` wrapper now executes packaged source rather than downloading an older GitHub commit.
 
-The existing ZeroGPU/pinned-runtime Space has not been redeployed by this repository update. Its previously captured run remains in `demo/live_verification.json` with the original revision identifier. See `RECORDING_GUIDE.md` for a longer optional presentation sequence.
+The existing Space was redeployed at Hugging Face commit `b6dd0ad18a9060e771f87716a7a258907a963a0d`, using the core from GitHub commit `6ea51be2ec264377aecbb59ee218581f1cec27ff`. Its `core_bot.py` matches this repository byte-for-byte. The account could not switch the existing Space from ZeroGPU to CPU, so the host retains the startup-only compatibility hook in `deployment/space_app.py`; chatbot requests do not call it or allocate a GPU. `deployment/README.space.md` preserves the deployed metadata. The earlier captured run remains in `demo/live_verification.json` as historical evidence. See `RECORDING_GUIDE.md` for a longer optional presentation sequence.

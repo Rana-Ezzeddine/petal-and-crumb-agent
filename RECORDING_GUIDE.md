@@ -1,6 +1,6 @@
 # Record the revised Petal & Crumb assistant
 
-Use the revised local app for this recording. The existing public Space still runs the earlier version until you update it. The supplied old video is unchanged.
+The continuous recording is now included in `demo/RanaEzzeddine_C3_Demo.mp4`, and the public Space was subsequently updated to the revised runtime on October 17, 2026. The sequence below remains an optional guide for a longer recording. The supplied older edited video is unchanged.
 
 ## 1. Prepare before recording
 
